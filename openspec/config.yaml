@@ -1,0 +1,33 @@
+﻿schema: spec-driven
+
+# CONSTITUCIÓN Y CONTEXTO DEL PROYECTO (Backend)
+context: |
+  # Constitución del Proyecto: Vaster Focus (Backend API)
+  
+  ## 1. Visión y Propósito
+  Vaster Focus es una plataforma de trabajo profundo (deep work) y estudio individual bajo la técnica Pomodoro.
+  Este backend expone una API REST para gestionar sesiones, metas y reportes de productividad en tiempo real.
+  
+  ## 2. Stack Tecnológico
+  - Runtime: Node.js (v22+) con TypeScript en modo estricto.
+  - Framework: Express.js.
+  - Base de Datos: PostgreSQL v16 (en contenedor Docker).
+  - ORM: Prisma ORM.
+  - Validación: Zod.
+  - Testing: Vitest + Supertest.
+  - Gestor de Paquetes: pnpm.
+  
+  ## 3. Reglas de Oro No Negociables (Invariantes del Sistema)
+  1. ESTÁNDAR UTC: Todas las marcas de tiempo (startedAt, endedAt) DEBEN almacenarse en PostgreSQL en formato UTC ISO-8601 (TIMESTAMPTZ / DateTime).
+  2. ZONA HORARIA LOCAL (AMERICA/LIMA): El cálculo de métricas diarias, horas de estudio y rachas (streaks) DEBE ejecutarse mediante la función SQL nativa `AT TIME ZONE 'America/Lima'` (UTC-5). Queda prohibido agrupar por fechas UTC en el servidor, evitando así la división de sesiones nocturnas entre dos días.
+  3. ARQUITECTURA LIMPIA EN CAPAS: Desacoplamiento estricto: routes/ -> controllers/ -> services/ -> repositories/. Los controladores no ejecutan lógica de negocio ni consultas a base de datos.
+  4. VALIDACIÓN ESTRICTA: Todo payload de entrada HTTP debe ser validado con esquemas de Zod antes de ingresar a los servicios.
+  5. IDENTIFICACIÓN MONOUSUARIO (MVP): Inyectar el usuario por defecto creado mediante seed (wilson@vasterfocus.com, timezone: America/Lima) a través de un middleware de contexto.
+
+rules:
+  proposal:
+    - "Redactar propuestas claras en español explicando el problema a resolver, la solución técnica y los criterios de éxito."
+  specs:
+    - "Redactar requerimientos en español usando EARS: Ubicuo (EL SISTEMA...), Evento (CUANDO...), Estado (MIENTRAS...), No deseado (SI... ENTONCES...), Opcional (DONDE...)."
+  tasks:
+    - "Aplicar metodología TDD con Vitest: escribir el test primero, verificar que falle (red), implementar la solución mínima para que pase (green) y refactorizar."

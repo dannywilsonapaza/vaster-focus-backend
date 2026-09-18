@@ -1,0 +1,252 @@
+{
+  "info": {
+    "_postman_id": "a9b3d1f0-4c28-4e89-9a7e-8c3b7f2a1b90",
+    "name": "Vaster Focus API",
+    "description": "Colección completa de endpoints para Vaster Focus (Pomodoro, Metas, Sesiones y Estadísticas en America/Lima).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Healthcheck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Verifica el estado del servidor Express."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Goals",
+      "item": [
+        {
+          "name": "Listar Metas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/goals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "goals"]
+            },
+            "description": "Obtiene la lista de metas del usuario ordenadas por fecha de creación descendente."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Meta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const res = pm.response.json();",
+                  "    pm.environment.set(\"goal_id\", res.id);",
+                  "    console.log(\"Variable goal_id guardada en el environment:\", res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Implementar autenticación con JWT y Refresh Tokens\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/goals",
+              "host": ["{{base_url}}"],
+              "path": ["api", "goals"]
+            },
+            "description": "Crea una nueva meta para el usuario. Guarda automáticamente el ID en la variable de entorno `goal_id`."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Meta (Completar / Renombrar)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isCompleted\": true,\n  \"title\": \"Implementar autenticación con JWT (Completado)\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/goals/{{goal_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "goals", "{{goal_id}}"]
+            },
+            "description": "Actualiza el estado (`isCompleted`) o título de una meta existente usando `goal_id`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sessions",
+      "item": [
+        {
+          "name": "Listar Historial de Sesiones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/sessions?limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sessions"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Cantidad máxima de sesiones a retornar"
+                }
+              ]
+            },
+            "description": "Obtiene las últimas sesiones registradas con sus metas asociadas."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar Sesión de Trabajo (Pomodoro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"WORK\",\n  \"status\": \"COMPLETED\",\n  \"targetSeconds\": 1500,\n  \"durationSeconds\": 1500,\n  \"startedAt\": \"2026-09-17T21:00:00-05:00\",\n  \"endedAt\": \"2026-09-17T21:25:00-05:00\",\n  \"goalIds\": [\"{{goal_id}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sessions"]
+            },
+            "description": "Registra una sesión de trabajo de 25 minutos vinculada a una meta. Se valida zona horaria, coherencia de tiempo y ausencia de solapamiento (409)."
+          },
+          "response": []
+        },
+        {
+          "name": "Registrar Sesión de Descanso Corto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"SHORT_BREAK\",\n  \"status\": \"COMPLETED\",\n  \"targetSeconds\": 300,\n  \"durationSeconds\": 300,\n  \"startedAt\": \"2026-09-17T21:25:00-05:00\",\n  \"endedAt\": \"2026-09-17T21:30:00-05:00\",\n  \"goalIds\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "sessions"]
+            },
+            "description": "Registra una sesión de descanso de 5 minutos."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "item": [
+        {
+          "name": "Reporte Diario (Lima Timezone)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stats/daily?limit=30",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stats", "daily"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "30",
+                  "description": "Límite de días a consultar (máximo 365)"
+                }
+              ]
+            },
+            "description": "Retorna el tiempo de estudio diario proyectado en America/Lima (UTC-5) eliminando el error de medianoche."
+          },
+          "response": []
+        },
+        {
+          "name": "Reporte Diario Filtrado por Rango",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stats/daily?from=2026-09-01&to=2026-09-30&limit=30",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stats", "daily"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-09-01",
+                  "description": "Fecha inicial YYYY-MM-DD"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-09-30",
+                  "description": "Fecha final YYYY-MM-DD"
+                },
+                {
+                  "key": "limit",
+                  "value": "30",
+                  "description": "Límite de registros"
+                }
+              ]
+            },
+            "description": "Consulta el tiempo de estudio filtrando por rango de fechas YYYY-MM-DD."
+          },
+          "response": []
+        },
+        {
+          "name": "Resumen Global y Rachas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/stats/summary",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stats", "summary"]
+            },
+            "description": "Retorna métricas consolidadas: total horas trabajadas, total descansos, sesiones completadas, racha actual (con ventana de gracia), mejor racha y booleano `studiedToday`."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

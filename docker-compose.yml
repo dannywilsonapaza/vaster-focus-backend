@@ -1,4 +1,4 @@
-﻿services:
+services:
   postgres:
     image: postgres:16-alpine
     container_name: vaster-focus-db
@@ -9,7 +9,7 @@
       POSTGRES_DB: vaster_focus
       TZ: America/Lima
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - vaster_focus_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -18,5 +18,22 @@
       timeout: 5s
       retries: 5
 
+  backend:
+    build: .
+    container_name: vaster-focus-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/vaster_focus?schema=public"
+      DEFAULT_USER_EMAIL: "wilson@vasterfocus.com"
+      DEFAULT_TIMEZONE: "America/Lima"
+      NODE_ENV: "development"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   vaster_focus_pgdata:
+

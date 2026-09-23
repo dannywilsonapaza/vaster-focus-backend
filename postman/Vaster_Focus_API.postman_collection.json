@@ -102,6 +102,33 @@
             "description": "Actualiza el estado (`isCompleted`) o título de una meta existente usando `goal_id`."
           },
           "response": []
+        },
+        {
+          "name": "Eliminar Meta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204 No Content\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/goals/{{goal_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "goals", "{{goal_id}}"]
+            },
+            "description": "Elimina permanentemente una meta existente usando la variable `goal_id`. Responde con HTTP 204 No Content (cuerpo vacío)."
+          },
+          "response": []
         }
       ]
     },

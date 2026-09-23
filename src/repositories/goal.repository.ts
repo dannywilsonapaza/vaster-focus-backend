@@ -40,6 +40,12 @@ export class GoalRepository {
       },
     });
   }
+
+  async delete(id: string, userId: string): Promise<Goal> {
+    return prisma.goal.delete({
+      where: { id, userId },
+    });
+  }
 }
 
 export const goalRepository = new GoalRepository();

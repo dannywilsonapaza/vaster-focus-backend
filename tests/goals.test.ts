@@ -69,4 +69,28 @@ describe('Goal Management API (/api/goals)', () => {
     expect(res.status).toBe(404);
     expect(res.body).toHaveProperty('error', 'Meta no encontrada');
   });
+
+  it('DELETE /api/goals/:id - elimina exitosamente una meta existente (204)', async () => {
+    // 1. Crear meta para borrar
+    const createRes = await request(app)
+      .post('/api/goals')
+      .send({ title: 'Meta para eliminar' });
+    const goalId = createRes.body.id;
+
+    // 2. Eliminar meta
+    const deleteRes = await request(app).delete(`/api/goals/${goalId}`);
+    expect(deleteRes.status).toBe(204);
+
+    // 3. Verificar que ya no exista
+    const listRes = await request(app).get('/api/goals');
+    const exists = listRes.body.some((g: { id: string }) => g.id === goalId);
+    expect(exists).toBe(false);
+  });
+
+  it('DELETE /api/goals/:id - retorna 404 si la meta no existe', async () => {
+    const res = await request(app).delete('/api/goals/id-inexistente-999');
+
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty('error', 'Meta no encontrada');
+  });
 });

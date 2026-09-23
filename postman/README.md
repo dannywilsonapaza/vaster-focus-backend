@@ -8,7 +8,7 @@ Archivos listos para importar directamente en **Postman** o **Insomnia / Thunder
 
 1. **`Vaster_Focus_API.postman_collection.json`**:
    - **Health**: Endpoint de comprobación del servidor (`GET /health`).
-   - **Goals**: Listar metas, crear meta (con script automático que guarda `goal_id`), y actualizar estado/título de meta.
+    - **Goals**: Listar metas, crear meta (con script automático que guarda `goal_id`), actualizar estado/título, y eliminar meta permanentemente (`DELETE /api/goals/:id`).
    - **Sessions**: Listar historial, registrar Pomodoro de trabajo (`WORK` de 25 min) vinculado a `goal_id`, y registrar descansos (`SHORT_BREAK` de 5 min).
    - **Stats**: Reporte diario proyectado en `America/Lima`, reporte con filtros por rango de fechas, y resumen general con cálculo de racha y ventana de gracia.
 

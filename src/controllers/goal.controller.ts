@@ -34,6 +34,17 @@ export class GoalController {
       next(error);
     }
   };
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user!.id;
+      const id = req.params.id as string;
+      await this.service.deleteGoal(id, userId);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export const goalController = new GoalController();

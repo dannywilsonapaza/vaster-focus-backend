@@ -25,6 +25,15 @@ export class GoalService {
       isCompleted: input.isCompleted,
     });
   }
+
+  async deleteGoal(id: string, userId: string): Promise<void> {
+    const existing = await this.repo.findByIdAndUserId(id, userId);
+    if (!existing) {
+      throw new AppError(404, 'Meta no encontrada');
+    }
+
+    await this.repo.delete(id, userId);
+  }
 }
 
 export const goalService = new GoalService();

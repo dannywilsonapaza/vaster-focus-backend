@@ -20,6 +20,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      prisma:
+        specifier: 6.19.3
+        version: 6.19.3(typescript@7.0.2)
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -36,9 +39,6 @@ importers:
       '@types/supertest':
         specifier: ^7.2.1
         version: 7.2.1
-      prisma:
-        specifier: 6.19.3
-        version: 6.19.3(typescript@7.0.2)
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
